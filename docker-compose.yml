@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: evo-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: evo
+      POSTGRES_PASSWORD: evo_password_change_me
+      POSTGRES_DB: evo_site_builder
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - evo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U evo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: evo-server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://evo:evo_password_change_me@postgres:5432/evo_site_builder
+      AI_API_KEY: ${AI_API_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      TRUSTED_ORIGINS: ${TRUSTED_ORIGINS:-http://localhost:5173,http://localhost:3000}
+      NODE_ENV: ${NODE_ENV:-production}
+    ports:
+      - "3000:3000"
+    networks:
+      - evo-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  evo-network:
+    driver: bridge
