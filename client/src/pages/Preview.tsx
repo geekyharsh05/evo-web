@@ -34,21 +34,42 @@ const Preview = () => {
   }
 
   useEffect(()=>{
-    if(!isPending && session?.user){
-      fetchCode()
+    if(!isPending){
+      if(session?.user){
+        fetchCode()
+      } else {
+        setLoading(false)
+      }
     }
-  },[session?.user])
+  },[isPending, session?.user, projectId, versionId])
 
   if(loading){
     return (
       <div className='flex items-center justify-center h-screen'>
-        <Loader2Icon className='size-7 animate-spin text-indigo-200' />
+        <Loader2Icon className='size-7 animate-spin text-sky-400' />
       </div>
     )
   }
+
+  if(!session?.user){
+    return (
+      <div className='flex flex-col items-center justify-center h-screen text-white'>
+        <p className='text-lg'>Please sign in to view this preview</p>
+      </div>
+    )
+  }
+
+  if(!code){
+    return (
+      <div className='flex flex-col items-center justify-center h-screen text-white'>
+        <p className='text-lg'>No preview available</p>
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen">
-      {code && <ProjectPreview project={{current_code: code} as Project} isGenerating={false} showEditorPanel={false}/>}
+      <ProjectPreview project={{current_code: code} as Project} isGenerating={false} showEditorPanel={false}/>
     </div>
   )
 }
