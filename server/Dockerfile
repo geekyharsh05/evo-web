@@ -35,8 +35,7 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 RUN npm ci --only=production && npm cache clean --force
 
 # Copy Prisma generated client from builder
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/generated ./generated
 
 # Copy built TypeScript files
 COPY --from=builder /app/dist ./dist
