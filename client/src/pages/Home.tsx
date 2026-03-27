@@ -33,12 +33,19 @@ const Home = () => {
 
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      onSubmitHandler(e as any);
+    }
+  }
+
   return (
   
       <section className="flex flex-col items-center text-white text-sm pb-20 px-4 font-poppins">
 
         <a href="#" className="flex items-center gap-2 border border-slate-700 rounded-full p-1 pr-3 text-sm mt-20">
-          <span className="bg-indigo-600 text-xs px-3 py-1 rounded-full">NEW</span>
+          <span className="bg-sky-600 text-xs px-3 py-1 rounded-full">NEW</span>
           <p className="flex items-center gap-2">
             <span>Turn thoughts into websites instantly</span>
             <svg className="mt-px" width="6" height="9" viewBox="0 0 6 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m1 1 4 3.5L1 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -53,25 +60,17 @@ const Home = () => {
           Create, customize and publish website faster than ever with our AI Site Builder.
         </p>
 
-        <form onSubmit={onSubmitHandler} className="bg-white/10 max-w-2xl w-full rounded-xl p-4 mt-10 border border-indigo-600/70 focus-within:ring-2 ring-indigo-500 transition-all">
-          <textarea onChange={e => setInput(e.target.value)} className="bg-transparent outline-none text-gray-300 resize-none w-full" rows={4} placeholder="Build a minimal portfolio website" required />
-          <button className="ml-auto flex items-center gap-2 bg-gradient-to-r from-[#CB52D4] to-indigo-600 rounded-md px-4 py-2">
-            {!loading ? 'Create with AI' : (
+        <form onSubmit={onSubmitHandler} className="bg-white/10 max-w-2xl w-full rounded-xl p-4 mt-10 border border-sky-600/70 focus-within:ring-2 ring-sky-500 transition-all">
+          <textarea onKeyDown={handleKeyDown} onChange={e => setInput(e.target.value)} className="bg-transparent outline-none text-gray-300 resize-none w-full" rows={4} placeholder="Build a minimal portfolio website (Cmd/Ctrl + Enter to generate)" required />
+          <button className="ml-auto flex items-center gap-2 bg-gradient-to-r from-sky-500 to-sky-600 rounded-md px-4 py-2">
+            {!loading ? 'Generate' : (
               <>
-              Creating <Loader2Icon className='animate-spin size-4 text-white'/>
+              Generating <Loader2Icon className='animate-spin size-4 text-white'/>
               </>
             )}
-            
+
           </button>
         </form>
-
-        {/*<div className="flex flex-wrap items-center justify-center gap-16 md:gap-20 mx-auto mt-16">
-          <img className="max-w-28 md:max-w-32" src="https://saasly.prebuiltui.com/assets/companies-logo/framer.svg" alt="" />
-          <img className="max-w-28 md:max-w-32" src="https://saasly.prebuiltui.com/assets/companies-logo/huawei.svg" alt="" />
-          <img className="max-w-28 md:max-w-32" src="https://saasly.prebuiltui.com/assets/companies-logo/instagram.svg" alt="" />
-          <img className="max-w-28 md:max-w-32" src="https://saasly.prebuiltui.com/assets/companies-logo/microsoft.svg" alt="" />
-          <img className="max-w-28 md:max-w-32" src="https://saasly.prebuiltui.com/assets/companies-logo/walmart.svg" alt="" />
-        </div>*/}
       </section>
 
   )
