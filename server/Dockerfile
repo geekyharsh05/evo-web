@@ -6,14 +6,15 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Copy prisma schema and config (needed for postinstall)
+COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
+
+# Install dependencies (postinstall runs prisma generate)
 RUN npm ci
 
 # Copy source files and configs
 COPY . .
-
-# Generate Prisma client
-RUN npx prisma generate
 
 # Build TypeScript
 RUN npm run build
@@ -23,20 +24,20 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install production dependencies
+# Copy package files and prisma schema (needed for postinstall)
 COPY package*.json ./
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+
+# Install production dependencies (postinstall runs prisma generate)
 RUN npm ci --only=production && npm cache clean --force
 
-# Copy Prisma schema and generated client
-COPY --from=builder /app/prisma ./prisma
+# Copy Prisma generated client from builder
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Copy built TypeScript files
 COPY --from=builder /app/dist ./dist
-
-# Copy config files if needed
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 # Create a non-root user
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
