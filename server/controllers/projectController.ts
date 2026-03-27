@@ -2,6 +2,7 @@ import {Request, Response} from 'express'
 import prisma from '../lib/prisma.js';
 import openai from '../configs/openai.js';
 
+export const MODEL_NAME = 'openai/gpt-5-nano';
 // Controller Function to Make Revision
 export const makeRevision = async (req: Request, res: Response) => {
     const userId = req.userId;
@@ -51,7 +52,7 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         // Enhance user prompt
         const promptEnhanceResponse = await openai.chat.completions.create({
-            model: 'deepseek/deepseek-r1-distill-qwen-32b',
+            model: MODEL_NAME,
             messages: [
                 {
                     role: 'system',
@@ -89,10 +90,10 @@ export const makeRevision = async (req: Request, res: Response) => {
                 projectId
             }
         })
-
+        
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
-            model: 'deepseek/deepseek-r1-distill-qwen-32b',
+            model: MODEL_NAME,
             messages: [
                 {
                     role: 'system',

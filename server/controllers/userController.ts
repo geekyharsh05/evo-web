@@ -2,6 +2,7 @@ import {Request, Response} from 'express'
 import prisma from '../lib/prisma.js';
 import openai from '../configs/openai.js';
 import Stripe from 'stripe'
+import { MODEL_NAME } from './projectController.js'
 
 // Get User Credits
 export const getUserCredits = async (req: Request, res: Response) => {
@@ -72,7 +73,7 @@ export const createUserProject = async (req: Request, res: Response) => {
 
         // Enhance user prompt
         const promptEnhanceResponse = await openai.chat.completions.create({
-            model: 'deepseek/deepseek-r1-distill-qwen-32b',
+            model: MODEL_NAME,
             messages: [
                 {
                     role: 'system',
@@ -116,7 +117,7 @@ export const createUserProject = async (req: Request, res: Response) => {
 
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
-            model: 'deepseek/deepseek-r1-distill-qwen-32b',
+            model: MODEL_NAME,
             messages: [
                 {
                     role: 'system',
