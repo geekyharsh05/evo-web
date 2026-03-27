@@ -8,7 +8,8 @@ COPY prisma ./prisma
 COPY prisma.config.ts ./prisma.config.ts
 
 # Install all dependencies (including tsx for running TypeScript)
-RUN npm ci && npm cache clean --force
+# Force NODE_ENV=development so devDependencies are installed
+RUN NODE_ENV=development npm ci && npm cache clean --force
 
 # Copy source files
 COPY . .
