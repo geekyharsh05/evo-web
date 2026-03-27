@@ -12,6 +12,7 @@ import { Toaster } from 'sonner'
 import AuthPage from './pages/auth/AuthPage'
 import Settings from './pages/Settings'
 import Loading from './pages/Loading'
+import { GradientBackground } from './components/GradientBackground'
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
 
   return (
     <div>
+    <GradientBackground />
     <Toaster />
       {!hideNavbar && <Navbar />}
       
