@@ -73,7 +73,8 @@ export const createUserProject = async (req: Request, res: Response) => {
 
         // Enhance user prompt
         const promptEnhanceResponse = await openai.chat.completions.create({
-            model: MODEL_NAME,
+          model: MODEL_NAME,
+          max_completion_tokens: 4000,
             messages: [
                 {
                     role: 'system',
@@ -88,7 +89,7 @@ export const createUserProject = async (req: Request, res: Response) => {
                     5. Mentioning responsive design requirements
                     6. Adding any missing but important elements
 
-                    Return ONLY the enhanced prompt, nothing else. Make it detailed but concise (2-3 paragraphs max).`
+                    Return ONLY the enhanced prompt, nothing else. Make it detailed but concise (1-2 paragraphs max).`
                 },
                 {
                     role: 'user',
@@ -117,7 +118,8 @@ export const createUserProject = async (req: Request, res: Response) => {
 
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
-            model: MODEL_NAME,
+          model: MODEL_NAME,
+          max_completion_tokens: 20000,
             messages: [
                 {
                     role: 'system',
